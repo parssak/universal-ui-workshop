@@ -14,30 +14,50 @@ function getRgbChannels(color) {
 // Themes definition
 // -----------------------------------------------------------------
 
+const getColorsForTheme = (color, isDark = false) => {
+  return {
+    "text-base": colors[color][isDark ? "50" : "800"],
+    "text-muted": colors[color][isDark ? "200" : "500"],
+    "text-inverted": colors[color][isDark ? "800" : "50"],
+    "bg-pure": isDark ? colors.black : colors.white,
+    "bg-base": colors[color][isDark ? "800" : "100"],
+    "bg-muted": colors[color][isDark ? "600" : "200"],
+    "bg-inverted": colors[color][isDark ? "100" : "800"],
+    "border-base": colors[color][isDark ? "500" : "300"],
+    "border-inverted": colors[color][isDark ? "300" : "500"],
+    "border-muted": colors[color][isDark ? "500" : "400"]
+  };
+};
+
 const themes = [
   {
     name: "default",
-    colors: {
-      "text-base": colors.neutral["800"],
-      "text-muted": colors.neutral["500"],
-      "text-inverted": colors.neutral["100"],
-      "bg-base": colors.neutral["100"],
-      "bg-inverted": colors.neutral["800"],
-      "border-base": colors.neutral["300"],
-      "border-inverted": colors.neutral["600"]
-    }
+    colors: getColorsForTheme("neutral", false)
+  },
+  {
+    name: "brand",
+    colors: getColorsForTheme("indigo", true)
   },
   {
     name: "dark",
-    colors: {
-      "text-base": colors.neutral["100"],
-      "text-muted": colors.neutral["400"],
-      "text-inverted": colors.neutral["800"],
-      "bg-base": colors.neutral["800"],
-      "bg-inverted": colors.neutral["100"],
-      "border-base": colors.neutral["600"],
-      "border-inverted": colors.neutral["300"]
-    }
+    colors: getColorsForTheme("neutral", true)
+  },
+  {
+    name: "error",
+    colors: getColorsForTheme("rose", true)
+  },
+
+  {
+    name: "success",
+    colors: getColorsForTheme("emerald", true)
+  },
+  {
+    name: "warning",
+    colors: getColorsForTheme("amber", true)
+  },
+  {
+    name: "info",
+    colors: getColorsForTheme("sky", true)
   }
 ];
 
@@ -105,14 +125,17 @@ module.exports = plugin(
         },
         backgroundColor: {
           theme: {
+            pure: "rgb(var(--color-bg-pure) / <alpha-value>)",
             base: "rgb(var(--color-bg-base) / <alpha-value>)",
-            inverted: "rgb(var(--color-bg-inverted) / <alpha-value>)"
+            inverted: "rgb(var(--color-bg-inverted) / <alpha-value>)",
+            muted: "rgb(var(--color-bg-muted) / <alpha-value>)"
           }
         },
         borderColor: {
           theme: {
             base: "rgb(var(--color-border-base) / <alpha-value>)",
-            inverted: "rgb(var(--color-border-inverted) / <alpha-value>)"
+            inverted: "rgb(var(--color-border-inverted) / <alpha-value>)",
+            muted: "rgb(var(--color-border-muted) / <alpha-value>)"
           }
         }
       }
