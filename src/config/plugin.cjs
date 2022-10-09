@@ -17,49 +17,61 @@ function getRgbChannels(color) {
 const getColorsForTheme = (color, isDark = false) => {
   return {
     "text-base": colors[color][isDark ? "50" : "800"],
-    "text-muted": colors[color][isDark ? "200" : "500"],
+    "text-muted": colors[color][isDark ? "100" : "500"],
     "text-inverted": colors[color][isDark ? "800" : "50"],
     "bg-pure": isDark ? colors.black : colors.white,
-    "bg-base": colors[color][isDark ? "800" : "100"],
+    "bg-base": colors[color][isDark ? "800" : "50"],
     "bg-muted": colors[color][isDark ? "600" : "200"],
-    "bg-inverted": colors[color][isDark ? "100" : "800"],
+    "bg-inverted": colors[color][isDark ? "50" : "800"],
     "border-base": colors[color][isDark ? "500" : "300"],
     "border-inverted": colors[color][isDark ? "300" : "500"],
     "border-muted": colors[color][isDark ? "500" : "400"]
   };
 };
 
-const themes = [
+const THEMES_CONFIG = [
   {
-    name: "default",
-    colors: getColorsForTheme("neutral", false)
+    name: "neutral",
+    color: "neutral"
   },
   {
     name: "brand",
-    colors: getColorsForTheme("indigo", true)
-  },
-  {
-    name: "dark",
-    colors: getColorsForTheme("neutral", true)
+    color: "indigo"
   },
   {
     name: "error",
-    colors: getColorsForTheme("rose", true)
+    color: "rose"
   },
-
   {
     name: "success",
-    colors: getColorsForTheme("emerald", true)
+    color: "emerald"
   },
   {
     name: "warning",
-    colors: getColorsForTheme("amber", true)
+    color: "amber"
   },
   {
     name: "info",
-    colors: getColorsForTheme("sky", true)
+    color: "sky"
   }
 ];
+
+// Create light/dark themes for each color
+const themes = THEMES_CONFIG.reduce((acc, theme) => {
+  const { name, color } = theme;
+  return [
+    ...acc,
+    {
+      name,
+      colors: getColorsForTheme(color)
+    },
+    {
+      name: `${name}-dark`,
+      colors: getColorsForTheme(color, true)
+    }
+  ];
+}, []);
+
 
 // -----------------------------------------------------------------
 // Tailwind CSS plugin
