@@ -15,17 +15,34 @@ function getRgbChannels(color) {
 // -----------------------------------------------------------------
 
 const getColorsForTheme = (color, isDark = false) => {
+  const STEPS = ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900"];
+
+  const C = colors[color];
+  const cMap = (l, d) => C[STEPS[isDark ? d : l]];
+
   return {
-    "text-base": colors[color][isDark ? "50" : "800"],
-    "text-muted": colors[color][isDark ? "100" : "500"],
-    "text-inverted": colors[color][isDark ? "800" : "50"],
+    "text-base": cMap(9, 0),
+    "text-inverted": cMap(0, 9),
+    "text-active": cMap(8, 5),
     "bg-pure": isDark ? colors.black : colors.white,
-    "bg-base": colors[color][isDark ? "800" : "50"],
-    "bg-muted": colors[color][isDark ? "600" : "200"],
-    "bg-inverted": colors[color][isDark ? "50" : "800"],
-    "border-base": colors[color][isDark ? "500" : "300"],
-    "border-inverted": colors[color][isDark ? "300" : "500"],
-    "border-muted": colors[color][isDark ? "500" : "400"]
+    "bg-base": cMap(0, 8),
+    "bg-inverted": cMap(8, 0),
+    "bg-active": cMap(7, 1),
+    "border-base": cMap(1, 7),
+    "border-inverted": cMap(7, 1),
+    "border-active": cMap(6, 2)
+  };
+  return {
+    // "text-base": colors[color][isDark ? "50" : "800"],
+    // "text-active": colors[color][isDark ? "100" : "500"],
+    // "text-inverted": colors[color][isDark ? "800" : "50"],
+    // "bg-pure": isDark ? colors.black : colors.white,
+    // "bg-base": colors[color][isDark ? "800" : "50"],
+    // "bg-active": colors[color][isDark ? "600" : "200"],
+    // "bg-inverted": colors[color][isDark ? "50" : "800"],
+    // "border-base": colors[color][isDark ? "500" : "400"],
+    // "border-inverted": colors[color][isDark ? "400" : "500"],
+    // "border-active": colors[color][isDark ? "500" : "400"]
   };
 };
 
@@ -48,11 +65,59 @@ const THEMES_CONFIG = [
   },
   {
     name: "warning",
-    color: "amber"
+    color: "orange"
   },
   {
     name: "info",
     color: "sky"
+  }
+];
+
+const SIZES_CONFIG = [
+  {
+    name: "xs",
+    sizes: {
+      px: "0.25rem",
+      py: "0.125rem",
+      text: "0.75rem",
+      line: "1rem"
+    }
+  },
+  {
+    name: "sm",
+    sizes: {
+      px: "0.5rem",
+      py: "0.25rem",
+      text: "0.875rem",
+      line: "1.25rem"
+    }
+  },
+  {
+    name: "md",
+    sizes: {
+      px: "0.75rem",
+      py: "0.375rem",
+      text: "1rem",
+      line: "1.5rem"
+    }
+  },
+  {
+    name: "lg",
+    sizes: {
+      px: "1rem",
+      py: "0.5rem",
+      text: "1.125rem",
+      line: "1.75rem"
+    }
+  },
+  {
+    name: "xl",
+    sizes: {
+      px: "1.25rem",
+      py: "0.625rem",
+      text: "1.25rem",
+      line: "1.75rem"
+    }
   }
 ];
 
@@ -72,6 +137,7 @@ const themes = THEMES_CONFIG.reduce((acc, theme) => {
   ];
 }, []);
 
+const sizes = SIZES_CONFIG;
 
 // -----------------------------------------------------------------
 // Tailwind CSS plugin
@@ -84,6 +150,7 @@ module.exports = plugin(
     // -----------------------------------------------------------------
 
     const defaultColors = themes[0].colors;
+    const defaultSizes = sizes[2].sizes;
 
     const getCSSColorVariables = (colors) => {
       return Object.fromEntries(
@@ -93,9 +160,18 @@ module.exports = plugin(
       );
     };
 
+    const getCSSSizeVariables = (sizes) => {
+      return Object.fromEntries(
+        Object.entries(sizes).map(([name, value]) => {
+          return [[`--size-${name}`], value];
+        })
+      );
+    };
+
     addBase({
       ":root": {
-        ...getCSSColorVariables(defaultColors)
+        ...getCSSColorVariables(defaultColors),
+        ...getCSSSizeVariables(defaultSizes)
       }
     });
 
@@ -112,12 +188,25 @@ module.exports = plugin(
       });
     });
 
+    sizes.forEach((size) => {
+      const { sizes, name } = size;
+      addBase({
+        [`[data-size=${name}]`]: {
+          ...getCSSSizeVariables(sizes)
+        }
+      });
+    });
+
     // -----------------------------------------------------------------
     // BONUS: Add theme-specific variant for bespoke theming overrides
     // -----------------------------------------------------------------
 
     themes.forEach((theme) => {
       addVariant(`theme-${theme.name}`, `[data-theme=${theme.name}] &`);
+    });
+
+    sizes.forEach((size) => {
+      addVariant(`size-${size.name}`, `[data-size=${size.name}] &`);
     });
   },
 
@@ -128,11 +217,29 @@ module.exports = plugin(
   {
     theme: {
       extend: {
+        colors: {
+          // All the colors for good measure, for unique use-cases.
+          ...themes.reduce((acc, theme) => {
+            return {
+              ...acc,
+              [`${theme.name}-base`]: theme.colors["bg-base"],
+              [`${theme.name}-active`]: theme.colors["bg-active"],
+              [`${theme.name}-inverted`]: theme.colors["bg-inverted"],
+              [`${theme.name}-pure`]: theme.colors["bg-pure"],
+              [`${theme.name}-text-base`]: theme.colors["text-base"],
+              [`${theme.name}-text-active`]: theme.colors["text-active"],
+              [`${theme.name}-text-inverted`]: theme.colors["text-inverted"],
+              [`${theme.name}-border-base`]: theme.colors["border-base"],
+              [`${theme.name}-border-active`]: theme.colors["border-active"],
+              [`${theme.name}-border-inverted`]: theme.colors["border-inverted"]
+            };
+          }, {})
+        },
         textColor: {
           theme: {
             base: "rgb(var(--color-text-base) / <alpha-value>)",
             inverted: "rgb(var(--color-text-inverted) / <alpha-value>)",
-            muted: "rgb(var(--color-text-muted) / <alpha-value>)"
+            active: "rgb(var(--color-text-active) / <alpha-value>)"
           }
         },
         backgroundColor: {
@@ -140,15 +247,25 @@ module.exports = plugin(
             pure: "rgb(var(--color-bg-pure) / <alpha-value>)",
             base: "rgb(var(--color-bg-base) / <alpha-value>)",
             inverted: "rgb(var(--color-bg-inverted) / <alpha-value>)",
-            muted: "rgb(var(--color-bg-muted) / <alpha-value>)"
+            active: "rgb(var(--color-bg-active) / <alpha-value>)"
           }
         },
         borderColor: {
           theme: {
             base: "rgb(var(--color-border-base) / <alpha-value>)",
             inverted: "rgb(var(--color-border-inverted) / <alpha-value>)",
-            muted: "rgb(var(--color-border-muted) / <alpha-value>)"
+            active: "rgb(var(--color-border-active) / <alpha-value>)"
           }
+        },
+        padding: {
+          "size-x": "var(--size-px)",
+          "size-y": "var(--size-py)"
+        },
+        fontSize: {
+          size: "var(--size-text)"
+        },
+        lineHeight: {
+          size: "var(--size-line)"
         }
       }
     }

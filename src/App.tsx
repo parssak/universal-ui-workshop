@@ -5,15 +5,14 @@ import "./index.css";
 function App() {
   const [activeTheme, setActiveTheme] = useState("neutral");
   const themesList = ["neutral", "brand", "error", "success", "warning", "info"];
-  const [enabled] = useDarkMode()
+  const [enabled] = useDarkMode();
 
   const getTheme = (theme: string) => {
     if (enabled) {
       return `${theme}-dark`;
     }
     return theme;
-  }
-
+  };
 
   return (
     <div data-theme={getTheme(activeTheme)} className="bg-theme-pure min-h-screen">
@@ -26,14 +25,29 @@ function App() {
               key={theme}
               onClick={() => setActiveTheme(theme)}
               data-theme={getTheme(theme)}
-              className="rounded bg-theme-base hover:bg-theme-muted transition border border-theme-base px-5 py-2 font-medium text-theme-base shadow"
+              className="rounded bg-theme-base hover:bg-theme-active transition border border-theme-base px-5 py-2 font-medium text-theme-base shadow"
             >
               {theme}
             </button>
           ))}
         </div>
 
-        <p className="mt-4 text-theme-muted">
+        <div className="flex items-start mt-6 gap-2 flex-wrap">
+          {["xs", "sm", "md", "lg", "xl"].map((size) => (
+            <button
+              key={size}
+              data-size={size}
+              className={`relative bg-theme-base hover:bg-theme-active border border-theme-base rounded text-theme-base text-size py-size-y px-size-x font-medium tracking-tight`}
+            >
+              <span className="leading-none absolute top-[0.125em] right-[0.125em] text-theme-active opacity-25 font-bold font-mono text-[0.75em]">
+                {size}
+              </span>
+              Button
+            </button>
+          ))}
+        </div>
+
+        <p className="mt-4 text-theme-active py-1 px-2 rounded border border-theme-active bg-theme-base">
           Current theme: <span className="font-medium text-theme-base">{activeTheme}</span>
         </p>
 
@@ -48,9 +62,9 @@ function App() {
               <strong>Inverted</strong> text and background colors.
             </p>
           </div>
-          <div className="rounded-lg bg-theme-muted p-6 shadow-md transition hover:md:theme-aqua:-rotate-6 border border-theme-muted">
-            <p className="text-theme-muted">
-              <strong>Muted</strong> text and background colors.
+          <div className="rounded-lg md:col-span-2 bg-theme-active p-6 shadow-md transition hover:md:theme-aqua:-rotate-6 border border-theme-active">
+            <p className="text-theme-active">
+              <strong>active</strong> text and background colors.
             </p>
           </div>
         </div>
