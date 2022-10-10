@@ -21,35 +21,24 @@ const getColorsForTheme = (color, isDark = false) => {
   const cMap = (l, d) => C[STEPS[isDark ? d : l]];
 
   return {
-    "text-base": cMap(9, 0),
-    "text-inverted": cMap(0, 9),
-    "text-active": cMap(8, 5),
+    "text-base": cMap(8, 0),
+    "text-inverted": cMap(0, 8),
+    "text-muted": cMap(5, 3),
+    "text-active": cMap(9, 1),
     "bg-pure": isDark ? colors.black : colors.white,
     "bg-base": cMap(0, 8),
     "bg-inverted": cMap(8, 0),
-    "bg-active": cMap(7, 1),
-    "border-base": cMap(1, 7),
-    "border-inverted": cMap(7, 1),
-    "border-active": cMap(6, 2)
-  };
-  return {
-    // "text-base": colors[color][isDark ? "50" : "800"],
-    // "text-active": colors[color][isDark ? "100" : "500"],
-    // "text-inverted": colors[color][isDark ? "800" : "50"],
-    // "bg-pure": isDark ? colors.black : colors.white,
-    // "bg-base": colors[color][isDark ? "800" : "50"],
-    // "bg-active": colors[color][isDark ? "600" : "200"],
-    // "bg-inverted": colors[color][isDark ? "50" : "800"],
-    // "border-base": colors[color][isDark ? "500" : "400"],
-    // "border-inverted": colors[color][isDark ? "400" : "500"],
-    // "border-active": colors[color][isDark ? "500" : "400"]
+    "bg-active": cMap(2, 6),
+    "border-base": cMap(4, 5),
+    "border-inverted": cMap(5, 4),
+    "border-active": cMap(3, 5)
   };
 };
 
 const THEMES_CONFIG = [
   {
     name: "neutral",
-    color: "neutral"
+    color: "gray"
   },
   {
     name: "brand",
@@ -105,18 +94,18 @@ const SIZES_CONFIG = [
     name: "lg",
     sizes: {
       px: "1rem",
-      py: "0.5rem",
+      py: "0.375rem",
       text: "1.125rem",
-      line: "1.75rem"
+      line: "1.5rem"
     }
   },
   {
     name: "xl",
     sizes: {
       px: "1.25rem",
-      py: "0.625rem",
+      py: "0.5rem",
       text: "1.25rem",
-      line: "1.75rem"
+      line: "1.5rem"
     }
   }
 ];
@@ -174,7 +163,7 @@ module.exports = plugin(
         ...getCSSSizeVariables(defaultSizes)
       }
     });
-
+    
     // -----------------------------------------------------------------
     // Redefine CSS variables for each theme
     // -----------------------------------------------------------------
@@ -239,7 +228,8 @@ module.exports = plugin(
           theme: {
             base: "rgb(var(--color-text-base) / <alpha-value>)",
             inverted: "rgb(var(--color-text-inverted) / <alpha-value>)",
-            active: "rgb(var(--color-text-active) / <alpha-value>)"
+            active: "rgb(var(--color-text-active) / <alpha-value>)",
+            muted: "rgb(var(--color-text-muted) / <alpha-value>)"
           }
         },
         backgroundColor: {
