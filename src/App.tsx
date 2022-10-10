@@ -17,19 +17,10 @@ const useTheme = () => {
   return [theme, setActiveTheme] as const;
 };
 
-const themesList = ["neutral", "brand", "error", "success", "warning", "info"];
+const themesList = ["neutral", "brand", "error", "success", "warning", "info"] as const
 
 function App() {
-  const [enabled] = useDarkMode();
-
   const [theme, setActiveTheme] = useTheme();
-
-  const getTheme = (theme: string): any => {
-    if (enabled) {
-      return `${theme}-dark`;
-    }
-    return theme;
-  };
 
   useEffect(() => {
     document.body.dataset.theme = theme;
@@ -45,9 +36,10 @@ function App() {
             <Button
               key={theme}
               onClick={() => setActiveTheme(theme)}
-              theme={getTheme(theme)}
+              theme={theme}
               size="lg"
-              // className="rounded bg-theme-base hover:bg-theme-active transition border border-theme-base px-size-x py-size-y font-medium text-theme-base shadow"
+              className="capitalize"
+
             >
               {theme}
             </Button>
