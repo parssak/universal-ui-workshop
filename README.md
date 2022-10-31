@@ -1,9 +1,3 @@
-# vite-react-tailwind-starter
+# Universal UI
 
-Minimal React, Vite, Tailwind, TypeScript Starter
-
-It's great ;)
-
-TypeScript support out of the box, with TailwindCSS3 pre-configured.
-
-Runs with vite for a super-fast compilation time
+This is a work in progress. Aiming to build a totally customizable UI library using TailwindCSS 3.2
