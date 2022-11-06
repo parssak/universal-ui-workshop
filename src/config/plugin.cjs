@@ -9,10 +9,10 @@ function getRgbChannels(hex) {
     .join(" ");
 }
 
-const getColorsForTheme = (color, isDark = false) => {
+const getColorsForTheme = (color, isDark = false, predefinedColors) => {
   const STEPS = ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900"];
 
-  const C = colors[color];
+  const C = predefinedColors ?? colors[color];
   const colorMap = (light, dark) => C[STEPS[isDark ? dark : light]];
 
   return {
@@ -68,16 +68,16 @@ module.exports = plugin(
 
     // Create light/dark themes for each color
     const themes = themeConfig.reduce((acc, theme) => {
-      const { name, color } = theme;
+      const { name, color, colors } = theme;
       return [
         ...acc,
         {
           name,
-          colors: getColorsForTheme(color, false)
+          colors: getColorsForTheme(color, false, colors)
         },
         {
           name: `${name}-dark`,
-          colors: getColorsForTheme(color, true)
+          colors: getColorsForTheme(color, true, colors)
         }
       ];
     }, []);
@@ -219,6 +219,13 @@ module.exports = plugin(
           }
         },
         borderColor: {
+          theme: {
+            base: "rgb(var(--color-border-base) / <alpha-value>)",
+            inverted: "rgb(var(--color-border-inverted) / <alpha-value>)",
+            active: "rgb(var(--color-border-active) / <alpha-value>)"
+          }
+        },
+        ringColor: {
           theme: {
             base: "rgb(var(--color-border-base) / <alpha-value>)",
             inverted: "rgb(var(--color-border-inverted) / <alpha-value>)",
